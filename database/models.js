@@ -8,13 +8,13 @@ const models = {
     return new Promise((resolve, reject) => {
       const db = client.db(dbconfig.db_name);  
       db.collection('users').find({}).filter({"userid": user.id}).toArray()
-        .then((result) => {
-        //   console.log(result);
-          resolve(result);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      .then((result) => {
+      //   console.log(result);
+        resolve(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     });
   },
 
@@ -23,12 +23,12 @@ const models = {
     return new Promise((resolve, reject) => {
       const db = client.db(dbconfig.db_name);  
       db.collection('tiles').find({}).filter({"location": location}).toArray()
-        .then((result) => {
-          resolve(result);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     });
   },
 
@@ -48,20 +48,19 @@ const models = {
     return new Promise((resolve, reject) => {
       const db = client.db(dbconfig.db_name);
       db.collection('tiles').insertOne(data)
-        .then(() => {
-          console.log("insertTile() has been run.");
-          resolve();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      .then(() => {
+        resolve();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     });
   },
 
-  reserveTile: (user, location, comment, tile) => {
-    tile.status = "Reserved";
-    tile.user = user.id;
-    tile.history.push({
+  reserveTile: (user, location, comment, data) => {
+    data.status = "Reserved";
+    data.user = user.id;
+    data.history.push({
       "user": user.id,
       "action": "reserve",
       "timestamp": new Date(),
@@ -69,13 +68,13 @@ const models = {
     });
     return new Promise((resolve, reject) => {
       const db = client.db(dbconfig.db_name);
-      db.collection('tiles').updateOne({"location":location}, {$set: tile})
-        .then(() => {
-          resolve();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      db.collection('tiles').updateOne({"location":location}, {$set: data})
+      .then(() => {
+        resolve();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     });
   },
   
@@ -90,44 +89,50 @@ const models = {
   insertUser: (user, location, comment, status) => {
     let data = {
       "location": location,
-      "status": status,
-      "userud": user.id,
+    //   "status": status,
+      "userid": user.id,
       "username": `${user.username}#${user.discriminator}`,
       "history": [{
-        "user": user.id,
-        "action": "reserve",
+        "location": location,
+        "action": status,
         "timestamp": new Date(),
         "comment": comment 
       }],
     }
-    // return new Promise((resolve, reject) => {
-    //     const db = client.db(db_name);
-    //     const collection = db.collection(collection_name);
-  
-    //     db.collection('users').updateOne({}, {}, { upsert: true })
-    //       .then(() => {
-    //         resolve();
-    //       })
-    //       .catch((err) => {
-    //         console.log(err);
-    //       });
-    //   });
+    data.status = (status === 'reserve') ? "Reserving" : "Inactive";
+    return new Promise((resolve, reject) => {
+      const db = client.db(dbconfig.db_name);
+      db.collection('users').insertOne(data)
+      .then(() => {
+        resolve();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    });
   },
 
-  updateUser: (user, location, status) => {
-    // return new Promise((resolve, reject) => {
-    //     const db = client.db(db_name);
-    //     const collection = db.collection(collection_name);
-  
-    //     db.collection('users').updateOne({}, {}, { upsert: true })
-    //       .then(() => {
-    //         resolve();
-    //       })
-    //       .catch((err) => {
-    //         console.log(err);
-    //       });
-    //   });
+  updateUser: (user, location, comment, status, data) => {
+    data.location = location;
+    data.status = (status === 'reserve') ? "Reserving" : "Inactive";
+    data.history.push({
+      "location": location,
+      "action": status,
+      "timestamp": new Date(),
+      "comment": comment
+    });
+    return new Promise((resolve, reject) => {
+      const db = client.db(dbconfig.db_name);
+      db.collection('users').updateOne({"userid":user.id}, {$set: data})
+      .then(() => {
+        resolve();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    });
   }
+
 }
 
 module.exports = models;

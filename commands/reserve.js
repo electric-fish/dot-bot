@@ -26,52 +26,82 @@ module.exports = (message) => {
   let comment = contentArr.slice(3).join(' ');
 
   models.getTile(location)
-  .then((result) => {
-    if (result.length > 1) {
-
+  .then((tileData) => {
+    if (tileData.length > 1) {
       message.react('❌');
-      return message.channel.send("Database error, please contact <@84383698778066944>.");
+      message.channel.send("Database error, please contact <@84383698778066944>.");
+    } else {
 
-    } else if (result.length === 0) {
+      models.getUser(message.author)
+      .then((userData) => {
 
-      models.insertTile(message.author, location, comment)
-      .then(() => {
-        return controllers.updateUser(message.author, location, comment, "reserve");
-      })
-      .then(() => {
-        message.react('✅');;
+        if (userData.length > 1) {
+          message.react('❌');
+          return message.channel.send("Database error, please contact <@84383698778066944>.");
+        }
+        if (userData.length === 1) {
+          if (userData[0].status === 'Reserving') {
+            message.react('❌');
+            return message.reply("you're currently reserving a tile. Use !check <@username> to find out more.");
+          }
+        }
+
+
+
+        //---------------------------------------------------------------
+
+        if (tileData.length === 0) {
+
+          models.insertTile(message.author, location, comment)
+          .then(() => {
+            message.react('✅');;
+            return controllers.updateUser(message.author, location, comment, "reserve");
+          })
+          .then(() => {
+          })
+          .catch((err) => {
+            message.react('❌');
+            console.log(err);
+          });
+    
+        } else {
+    
+          let tile = tileData[0];
+          if (tile.status === "Reserved") {
+            message.react('❌');
+            return message.reply(
+              `that tile is currently reserved. Use !check <x coordinate> <y coordinate> to find out more.`
+            );
+          } else {
+            // actually reserve that damn tile
+            let comment = contentArr.slice(3).join(' ');
+    
+            models.reserveTile(message.author, location, comment, tile)
+            .then(() => {
+              message.react('✅');;
+              return controllers.updateUser(message.author, location, comment, "reserve");
+            })
+            .then(() => {
+            })
+            .catch((err) => {
+              message.react('❌');
+              console.log(err);
+            });
+    
+          }
+        }
+
+        //------------------------------------------------------------------
+
+
+
       })
       .catch((err) => {
-        message.react('❌');
         console.log(err);
       });
 
-    } else {
-
-      let tile = result[0];
-      if (tile.status === "Reserved") {
-        message.react('❌');
-        return message.reply(
-          `that tile is currently reserved, use !check to find out more.`
-        );
-      } else {
-        // actually reserve that damn tile
-        let comment = contentArr.slice(3).join(' ');
-
-        models.reserveTile(message.author, location, comment, tile)
-        .then(() => {
-          return controllers.updateUser(message.author, location, comment, "reserve");
-        })
-        .then(() => {
-          message.react('✅');
-        })
-        .catch((err) => {
-          message.react('❌');
-          console.log(err);
-        });
-
-      }
     }
+    
   })
   .catch((err) => {
     message.react('❌');
