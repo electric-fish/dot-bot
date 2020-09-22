@@ -1,4 +1,5 @@
 const models = require('../database/models');
+const controllers = require('./controllers');
 
 module.exports = (message) => {
 
@@ -19,8 +20,7 @@ module.exports = (message) => {
     message.react('❌');
     return message.reply(
       `please enter valid tile coordinates.`
-    );
-    
+    );    
   }
 
   let comment = contentArr.slice(3).join(' ');
@@ -28,20 +28,26 @@ module.exports = (message) => {
   models.getTile(location)
   .then((result) => {
     if (result.length > 1) {
+
       message.react('❌');
       return message.channel.send("Database error, please contact <@84383698778066944>.");
+
     } else if (result.length === 0) {
 
       models.insertTile(message.author, location, comment)
-      .then((result) => {
-        message.react('✅');
+      .then(() => {
+        return controllers.updateUser(message.author, location, comment, "reserve");
+      })
+      .then(() => {
+        message.react('✅');;
       })
       .catch((err) => {
         message.react('❌');
         console.log(err);
       });
 
-    } else {  
+    } else {
+
       let tile = result[0];
       if (tile.status === "Reserved") {
         message.react('❌');
@@ -53,7 +59,10 @@ module.exports = (message) => {
         let comment = contentArr.slice(3).join(' ');
 
         models.reserveTile(message.author, location, comment, tile)
-        .then((result) => {
+        .then(() => {
+          return controllers.updateUser(message.author, location, comment, "reserve");
+        })
+        .then(() => {
           message.react('✅');
         })
         .catch((err) => {
@@ -68,38 +77,6 @@ module.exports = (message) => {
     message.react('❌');
     console.log(err);
   });
-
-
-
-  // models.getUser(message.author)
-  // .then((result) => {
-  //   if (result.length > 1) {
-  //     return message.channel.send("Database error, please contact <@84383698778066944>.");
-  //   } else if (result.length === 0) {
-  //     let data;
-  //     insertUser(message.author, location, data);
-  //   } else {
-  //     let data;
-  //     updateUser(message.author, location, data);
-  //   }
-  // })
-  // .catch((err) => {
-  //   console.log(err);
-  // });
-
-
-
-
-
-
-
-
-
-
-
-
-  // let comment = contentArr.slice(3).join(' ');
-  // console.log(comment);
 
   // return message.reply("reserve has been run.");
 

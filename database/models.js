@@ -32,7 +32,7 @@ const models = {
     });
   },
 
-  insertTile: (user, location, comment) => {      
+  insertTile: (user, location, comment) => {
     let data = {
       "location": location,
       "status": "Reserved",
@@ -87,7 +87,19 @@ const models = {
 
   },
 
-  insertUser: (user, location, status) => {
+  insertUser: (user, location, comment, status) => {
+    let data = {
+      "location": location,
+      "status": status,
+      "userud": user.id,
+      "username": `${user.username}#${user.discriminator}`,
+      "history": [{
+        "user": user.id,
+        "action": "reserve",
+        "timestamp": new Date(),
+        "comment": comment 
+      }],
+    }
     // return new Promise((resolve, reject) => {
     //     const db = client.db(db_name);
     //     const collection = db.collection(collection_name);
