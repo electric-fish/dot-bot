@@ -1,5 +1,5 @@
-const config = {
+const dbconfig = {
     token: /* INSERT HERE */,
   };
   
-export default options;
+export default dbconfig;
