@@ -18,4 +18,6 @@ npm install
 ```
 npm run start
 ```
-6. Invite the bot into your Discord server through the Developer's Portal and create a channel named `#dot-ground`
+6. Invite the bot into your Discord server via the Developer's Portal under OAuth2
+
+7. Create a channel in your server named `#dot-ground`
