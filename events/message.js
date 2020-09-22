@@ -8,7 +8,7 @@ module.exports = (client, message) => {
 //   if (message.channel.name === 'dot-ground') {
   if (message.channel.name === 'test') {
     if (message.content.startsWith("!test")) {
-        return test(message);
+      return test(message);
     } else if (message.content.startsWith("!check")) {
       return check(message);
     } else if (message.content.startsWith("!reserve")) {
