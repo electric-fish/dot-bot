@@ -1,12 +1,20 @@
+const models = require('../database/models');
+
 module.exports = (message) => {
 
   let contentArr = message.content.split(" ");
 
   // check user
   if (contentArr.length === 2) {
-
     let member = message.mentions.members.first();
+    if (member === undefined) {      
+      return message.reply(
+        `please enter valid user.`
+      );
+    }
 
+    models.getUser();
+    
     return message.reply(
       `check user.`
     );
@@ -20,6 +28,7 @@ module.exports = (message) => {
         `please enter valid tile coordinates.`
       );
     }
+
     return message.reply(
       `check tile.`
     );
@@ -28,14 +37,5 @@ module.exports = (message) => {
   return message.reply(
     `please enter valid arguments.`
   );
-
-
-  // let location = [parseInt(contentArr[1]), parseInt(contentArr[2])];
-  // // console.log(location);
-  // if ( location[0] === NaN || location[1] === NaN || location[0] > 300 || location[1] > 300) {
-  //   return message.reply(
-  //     `please enter valid tile coordinates.`
-  //   );
-  // }
-
+  
 };

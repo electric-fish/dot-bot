@@ -1,4 +1,5 @@
 module.exports = (message) => {
+
   let member = message.mentions.members.first();
 
   // let contentStr = message.content;
@@ -23,5 +24,5 @@ module.exports = (message) => {
 
 
   return message.reply("reserve has been run.");
-  // return message.reply("used !reserve, " + message.author.username + " mentioned <@" + member.id + ">");
+
 };

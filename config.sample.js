@@ -1,4 +1,4 @@
-onst config = {
+const config = {
   token: /* INSERT HERE */,
 };
   

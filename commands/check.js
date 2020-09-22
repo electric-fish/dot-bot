@@ -1,10 +1,17 @@
 module.exports = (message) => {
+
   let contentArr = message.content.split(" ");
 
   // check user
   if (contentArr.length === 2) {
 
     let member = message.mentions.members.first();
+
+    if (member === undefined) {      
+      return message.reply(
+        `please enter valid user.`
+      );
+    }
 
     return message.reply(
       `check user.`
@@ -27,4 +34,5 @@ module.exports = (message) => {
   return message.reply(
     `please enter valid arguments.`
   );
+  
 };
