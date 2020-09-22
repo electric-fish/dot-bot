@@ -16,9 +16,11 @@ module.exports = (message) => {
   let location = [parseInt(contentArr[1]), parseInt(contentArr[2])];
   // console.log(location);
   if ( isNaN(location[0])  || isNaN(location[1]) || location[0] > 300 || location[1] > 300) {
+    message.react('❌');
     return message.reply(
       `please enter valid tile coordinates.`
     );
+    
   }
 
   let comment = contentArr.slice(3).join(' ');
@@ -26,19 +28,23 @@ module.exports = (message) => {
   models.getTile(location)
   .then((result) => {
     if (result.length > 1) {
+      message.react('❌');
       return message.channel.send("Database error, please contact <@84383698778066944>.");
     } else if (result.length === 0) {
 
       models.insertTile(message.author, location, comment)
       .then((result) => {
+        message.react('✅');
       })
       .catch((err) => {
+        message.react('❌');
         console.log(err);
       });
 
     } else {  
       let tile = result[0];
       if (tile.status === "Reserved") {
+        message.react('❌');
         return message.reply(
           `that tile is currently reserved, use !check to find out more.`
         );
@@ -48,15 +54,18 @@ module.exports = (message) => {
 
         models.reserveTile(message.author, location, comment, tile)
         .then((result) => {
+          message.react('✅');
         })
         .catch((err) => {
+          message.react('❌');
           console.log(err);
         });
-        
+
       }
     }
   })
   .catch((err) => {
+    message.react('❌');
     console.log(err);
   });
 

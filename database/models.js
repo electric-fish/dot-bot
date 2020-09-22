@@ -4,7 +4,7 @@ const dbconfig = require('./db.config.js');
 const models = {
 
   getUser: (user) => {
-    console.log("getUser: " + user.id);
+    // console.log("getUser: " + user.id);
     return new Promise((resolve, reject) => {
       const db = client.db(dbconfig.db_name);  
       db.collection('users').find({}).filter({"userid": user.id}).toArray()
@@ -19,7 +19,7 @@ const models = {
   },
 
   getTile: (location) => {
-    console.log("getTile: (" + location[0] + ", " + location[1] + ")");
+    // console.log("getTile: (" + location[0] + ", " + location[1] + ")");
     return new Promise((resolve, reject) => {
       const db = client.db(dbconfig.db_name);  
       db.collection('tiles').find({}).filter({"location": location}).toArray()
