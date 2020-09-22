@@ -3,12 +3,13 @@ const dbconfig = require('./db.config.js');
 
 const models = {
 
-  getUser: (id) => {
-    console.log("getUser: " + id);
+  getUser: (user) => {
+    console.log("getUser: " + user.id);
     return new Promise((resolve, reject) => {
       const db = client.db(dbconfig.db_name);  
-      db.collection(dbconfig.collection_name).find({}).filter({"history.user": id}).toArray()
+      db.collection('users').find({}).filter({"userid": user.id}).toArray()
         .then((result) => {
+        //   console.log(result);
           resolve(result);
         })
         .catch((err) => {
@@ -21,7 +22,7 @@ const models = {
     console.log("getTile: (" + location[0] + ", " + location[1] + ")");
     return new Promise((resolve, reject) => {
       const db = client.db(dbconfig.db_name);  
-      db.collection(dbconfig.collection_name).find({}).filter({"location": location}).toArray()
+      db.collection('tiles').find({}).filter({"location": location}).toArray()
         .then((result) => {
           resolve(result);
         })
@@ -31,104 +32,90 @@ const models = {
     });
   },
 
-  postTile: () => {
+  insertTile: (user, location, comment) => {      
+    let data = {
+      "location": location,
+      "status": "Reserved",
+      "user": user.id,
+      "history": [{
+        "user": user.id,
+        "action": "reserve",
+        "timestamp": new Date(),
+        "comment": comment 
+      }],
+    }
+    // console.log(data);
+    return new Promise((resolve, reject) => {
+      const db = client.db(dbconfig.db_name);
+      db.collection('tiles').insertOne(data)
+        .then(() => {
+          console.log("insertTile() has been run.");
+          resolve();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+
+  reserveTile: (user, location, comment, tile) => {
+    tile.status = "Reserved";
+    tile.user = user.id;
+    tile.history.push({
+      "user": user.id,
+      "action": "reserve",
+      "timestamp": new Date(),
+      "comment": comment
+    });
+    return new Promise((resolve, reject) => {
+      const db = client.db(dbconfig.db_name);
+      db.collection('tiles').updateOne({"location":location}, {$set: tile})
+        .then(() => {
+          resolve();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  },
+  
+  clearTile: (user, location) => {
 
   },
 
-//   getCanvas: () => {
-//     return new Promise((resolve, reject) => {
-//       const db = client.db(db_name);
+  dropTile: (user, location) => {
 
-//       db.collection(collection_name).find({}).toArray()
-//         .then((result) => {
-//           resolve(result);
-//         })
-//         .catch((err) => {
-//           console.log(err);
-//         });
-//     });
-//   },
+  },
+
+  insertUser: (user, location, status) => {
+    // return new Promise((resolve, reject) => {
+    //     const db = client.db(db_name);
+    //     const collection = db.collection(collection_name);
   
-//   getCanvasWithId: (canvasId) => {
-//     return new Promise((resolve, reject) => {
-//       const db = client.db(db_name);
+    //     db.collection('users').updateOne({}, {}, { upsert: true })
+    //       .then(() => {
+    //         resolve();
+    //       })
+    //       .catch((err) => {
+    //         console.log(err);
+    //       });
+    //   });
+  },
 
-//       var id = parseInt(canvasId);
-//       db.collection('canvases').findOne({_id: id})
-//         .then((result) => {
-//           // console.log(result);
-//           resolve(result);
-//         })
-//         .catch((err) => {
-//           console.log(err);
-//         });
-        
-//     });
-//   },
-
-//   getCanvasList: () => {
-//     return new Promise((resolve, reject) => {
-//       const db = client.db(db_name);
-
-//       db.collection('canvas_list').find({}).toArray()
-//         .then((result) => {
-//           resolve(result);
-//         })
-//         .catch((err) => {
-//           console.log(err);
-//         });
-//     });
-//   },
-
-//   postPixel: (pixelData) => {
-//     return new Promise((resolve, reject) => {
-//       const db = client.db(db_name);
-//       const collection = db.collection(collection_name);
-
-//       db.collection(collection_name).updateOne({ rowNum: pixelData.rowNum, colNum: pixelData.colNum }, { $set: pixelData }, { upsert: true })
-//         .then(() => {
-//           resolve();
-//         })
-//         .catch((err) => {
-//           console.log(err);
-//         });
-//     });
-//   },
-
-//   postPixelWithId: (pixelData, canvasId) => {
-//     return new Promise((resolve, reject) => {
-//       var id = parseInt(canvasId);
-
-//       const db = client.db(db_name);
-//       const collection = db.collection(collection_name);
-
-//       // console.log(pixelData);
-      
-//       db.collection('canvases')
-//       .updateOne({ _id: 1,
-//                    "data.rowNum": 0,
-//                    "data.colNum": 0 },
-//                  { $set:
-//                    { "data.$":
-//                          {
-//                            "rowNum": 0,
-//                            "colNum": 0,
-//                            "RGBA_channels": [6,6,6,6],
-//                            "lastEditedBy": 'fish',
-//                            "lastedEditedAt": 'death',
-//                          },
-//                    }
-//                  },
-//                  { upsert: true })
-//         .then(() => {
-//           resolve();
-//         })
-//         .catch((err) => {
-//           console.log(err);
-//         });
-//     });
-//   },
-
-};
+  updateUser: (user, location, status) => {
+    // return new Promise((resolve, reject) => {
+    //     const db = client.db(db_name);
+    //     const collection = db.collection(collection_name);
+  
+    //     db.collection('users').updateOne({}, {}, { upsert: true })
+    //       .then(() => {
+    //         resolve();
+    //       })
+    //       .catch((err) => {
+    //         console.log(err);
+    //       });
+    //   });
+  }
+}
 
 module.exports = models;
