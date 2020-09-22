@@ -13,7 +13,13 @@ module.exports = (message) => {
       );
     }
 
-    models.getUser(member.id);
+    models.getUser(member.id)
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
     return message.reply(
       `check user.`

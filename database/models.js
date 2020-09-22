@@ -1,25 +1,28 @@
 const client = require('./index.js');
 const dbconfig = require('./db.config.js');
 
-// const db_url = 'mongodb://localhost:27017';
-// const db_name = 'pixelcanvas';
-// const collection_name = 'canvas';
-
 const models = {
 
   getUser: (id) => {
     console.log("getUser: " + id);
+    return new Promise((resolve, reject) => {
+      const db = client.db(dbconfig.db_name);  
+      db.collection(dbconfig.collection_name).find({}).filter({"history.user": id}).toArray()
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
   },
 
   getTile: (location) => {
-    console.log("getTile: (" + location[0] + ", " + location[1] + ")");    
-
+    console.log("getTile: (" + location[0] + ", " + location[1] + ")");
     return new Promise((resolve, reject) => {
-      const db = client.db(dbconfig.db_name);
-  
+      const db = client.db(dbconfig.db_name);  
       db.collection(dbconfig.collection_name).find({}).filter({"location": location}).toArray()
         .then((result) => {
-          console.log("test");
           resolve(result);
         })
         .catch((err) => {
