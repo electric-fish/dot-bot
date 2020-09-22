@@ -13,8 +13,8 @@ module.exports = (message) => {
       );
     }
 
-    models.getUser();
-    
+    models.getUser(member.id);
+
     return message.reply(
       `check user.`
     );
@@ -28,6 +28,15 @@ module.exports = (message) => {
         `please enter valid tile coordinates.`
       );
     }
+
+    models.getTile(location)
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
 
     return message.reply(
       `check tile.`
