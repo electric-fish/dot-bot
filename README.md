@@ -17,3 +17,5 @@ npm install
 5. To start the bot, run
 ```
 npm run start
+```
+6. Invite the bot into your Discord server through the Developer's Portal and create a channel named `#dot-ground`
