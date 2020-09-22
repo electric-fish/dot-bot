@@ -1,0 +1,26 @@
+{
+  "name": "dot-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/electric-fish/dot-bot.git"
+  },
+  "author": "electric-fish",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/electric-fish/dot-bot/issues"
+  },
+  "homepage": "https://github.com/electric-fish/dot-bot#readme",
+  "dependencies": {
+    "discord.js": "^12.3.1",
+    "moment": "^2.28.0",
+    "mongodb": "^3.6.2",
+    "nodemon": "^2.0.4"
+  }
+}

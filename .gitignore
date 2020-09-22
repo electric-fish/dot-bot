@@ -1,0 +1,9 @@
+# Compiled Files
+
+# Dependency Files
+node_modules/
+
+# API Keys
+database/config.js
+
+# Test Suites
