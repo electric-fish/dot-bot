@@ -5,7 +5,7 @@ const embeds = {
     // description: 'Status: ',
     fields: [
       {
-        name: 'Actions',
+        name: 'History',
         value: '-',
       }
     ],
@@ -18,7 +18,7 @@ const embeds = {
     description: 'Status: ',
     fields: [
       {
-        name: 'Actions',
+        name: 'History',
         value: '-',
       }
     ],

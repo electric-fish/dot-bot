@@ -103,11 +103,35 @@ module.exports = (message) => {
           embeds.tile.fields[0].value = '-';
           // embeds.tile.timestamp = new Date();
           return message.channel.send({ embed: embeds.tile });
-        } else {  
-          let tile = result[0];  
+        } else {
+          let tile = result[0];
+
+          let historyStr = "";
+          for (var i in tile.history) {
+            if (historyStr.length > 0) {
+              historyStr += "\n";
+            }
+            historyStr += moment(tile.history[i].timestamp).startOf('hour').fromNow();
+            historyStr += ' - ';            
+            switch (tile.history[i].action) {
+              case 'reserve':
+                historyStr += `reserved by <@${tile.history[i].userid}>: `;
+                break;
+              case 'clear':
+                historyStr += `cleared by <@${tile.history[i].userid}>: `;
+                break;
+              case 'drop':
+                historyStr += `dropped by <@${tile.history[i].userid}>: `;
+                break;
+              default:
+                break;
+            }
+            historyStr += tile.history[i].comment;
+          }
+
           embeds.tile.title = `(${location[0]}, ${location[1]})`;          
           embeds.tile.description = (tile.status === 'active') ? `Status: Reserved by <@${tile.userid}>` : 'Status: Inactive';
-          embeds.tile.fields[0].value = `a lot of stuff is gonna come in here welp`;
+          embeds.tile.fields[0].value = historyStr;
           // embeds.tile.timestamp = new Date();
           return message.channel.send({ embed: embeds.tile });
         }
