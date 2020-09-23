@@ -80,7 +80,6 @@ const models = {
   },
   
   clearTile: (user, location, comment, data) => {
-    console.log("clearTile()");
     data.status = "inactive";
     data.userid = user.id;
     data.history.push({
@@ -102,7 +101,6 @@ const models = {
   },
 
   dropTile: (user, location, comment, data) => {
-    console.log("clearTile()");
     data.status = "inactive";
     data.userid = user.id;
     data.history.push({
