@@ -7,7 +7,8 @@ const models = {
     // console.log("getUser: " + user.id);
     return new Promise((resolve, reject) => {
       const db = client.db(dbconfig.db_name);  
-      db.collection('users').find({}).filter({"userid": user.id}).toArray()
+    //   db.collection('users').find({}).filter({"userid": user.id}).toArray()
+      db.collection('tiles').find({}).filter({"history.userid": user.id}).toArray()
       .then((result) => {
       //   console.log(result);
         resolve(result);
@@ -35,10 +36,10 @@ const models = {
   insertTile: (user, location, comment) => {
     let data = {
       "location": location,
-      "status": "Reserved",
-      "user": user.id,
+      "status": "active",
+      "userid": user.id,
       "history": [{
-        "user": user.id,
+        "userid": user.id,
         "action": "reserve",
         "timestamp": new Date(),
         "comment": comment 
@@ -58,10 +59,10 @@ const models = {
   },
 
   reserveTile: (user, location, comment, data) => {
-    data.status = "Reserved";
-    data.user = user.id;
+    data.status = "active";
+    data.userid = user.id;
     data.history.push({
-      "user": user.id,
+      "userid": user.id,
       "action": "reserve",
       "timestamp": new Date(),
       "comment": comment
@@ -86,6 +87,7 @@ const models = {
 
   },
 
+  /*
   insertUser: (user, location, comment, status) => {
     let data = {
       "location": location,
@@ -111,7 +113,9 @@ const models = {
       });
     });
   },
+  */
 
+  /*
   updateUser: (user, location, comment, status, data) => {
     data.location = location;
     data.status = (status === 'reserve') ? "Reserving" : "Inactive";
@@ -132,6 +136,7 @@ const models = {
       });
     });
   }
+  */
 
 }
 

@@ -27,48 +27,54 @@ module.exports = (message) => {
 
   models.getTile(location)
   .then((tileData) => {
+
     if (tileData.length > 1) {
+
       message.react('❌');
       message.channel.send("Database error, please contact <@84383698778066944>.");
+
     } else {
 
-      //---------------------------------------------------------------
+      // --- tile untouched, reserve --- //
 
-        if (tileData.length === 0) {
+      if (tileData.length === 0) {
 
-          models.insertTile(message.author, location, comment)
+        models.insertTile(message.author, location, comment)
+        .then(() => {
+          message.react('✅');
+        })
+        .catch((err) => {
+          message.react('❌');
+          console.log(err);
+        });
+    
+      } else {
+    
+        let tile = tileData[0];
+        
+      // --- tile currently reserved --- //
+
+        if (tile.status === "active") {
+          message.react('❌');
+          return message.reply(
+            `that tile is currently reserved. Use !check <x coordinate> <y coordinate> to find out more.`
+          );
+
+      // --- tile has been dropped or cleared, reserve --- //
+        } else {
+          let comment = contentArr.slice(3).join(' ');
+    
+          models.reserveTile(message.author, location, comment, tile)
           .then(() => {
-            message.react('✅');
+            message.react('✅');;
           })
           .catch((err) => {
             message.react('❌');
             console.log(err);
           });
     
-        } else {
-    
-          let tile = tileData[0];
-          if (tile.status === "Reserved") {
-            message.react('❌');
-            return message.reply(
-              `that tile is currently reserved. Use !check <x coordinate> <y coordinate> to find out more.`
-            );
-          } else {
-            let comment = contentArr.slice(3).join(' ');
-    
-            models.reserveTile(message.author, location, comment, tile)
-            .then(() => {
-              message.react('✅');;
-            })
-            .catch((err) => {
-              message.react('❌');
-              console.log(err);
-            });
-    
-          }
         }
-
-        //------------------------------------------------------------------
+      }
 
     }
     

@@ -2,7 +2,7 @@ const embeds = {
   user: {
     color: 12115178,
     title: 'user',
-    description: 'Status: ',
+    // description: 'Status: ',
     fields: [
       {
         name: 'Actions',
