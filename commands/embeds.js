@@ -9,7 +9,7 @@ const embeds = {
         value: '-',
       }
     ],
-    timestamp: new Date(),
+    // timestamp: new Date(),
   },
 
   tile: {
@@ -22,7 +22,7 @@ const embeds = {
         value: '-',
       }
     ],
-    timestamp: new Date(),
+    // timestamp: new Date(),
   }
 }
 

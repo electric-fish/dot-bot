@@ -22,7 +22,7 @@ module.exports = (message) => {
         embeds.user.title = member.user.username + "#" + member.user.discriminator;
         embeds.user.description = 'Status: Inactive';
         embeds.user.fields[0].value = '-';
-        embeds.user.timestamp = new Date();
+        // embeds.user.timestamp = new Date();
         return message.channel.send({ embed: embeds.user });
       } else {
 
@@ -48,7 +48,6 @@ module.exports = (message) => {
         user.history.sort((a, b) => {
           return a.timestamp - b.timestamp;
         });
-        console.log(user);
 
         // --- check status --- //
         let historyStr = "";
@@ -73,12 +72,10 @@ module.exports = (message) => {
           }
           historyStr += user.history[i].comment;
         }
-        // "[40 minutes ago](http://) - reserved (122, 106): \n[20 minutes ago](http://) - cleared (122,106): cleared by Dummy\n[10 minutes ago]() - reserved (122, 107):\n[2 minutes ago]() - dropped (122, 107): too hard"
-
 
         embeds.user.title = member.user.username + "#" + member.user.discriminator;
         embeds.user.fields[0].value = historyStr;
-        embeds.user.timestamp = new Date();
+        // embeds.user.timestamp = new Date();
         return message.channel.send({ embed: embeds.user });
       }
     })
@@ -104,14 +101,14 @@ module.exports = (message) => {
           embeds.tile.title = `(${location[0]}, ${location[1]})`;
           embeds.tile.description = 'Status: Inactive';
           embeds.tile.fields[0].value = '-';
-          embeds.tile.timestamp = new Date();
+          // embeds.tile.timestamp = new Date();
           return message.channel.send({ embed: embeds.tile });
         } else {  
           let tile = result[0];  
           embeds.tile.title = `(${location[0]}, ${location[1]})`;          
           embeds.tile.description = (tile.status === 'active') ? `Status: Reserved by <@${tile.userid}>` : 'Status: Inactive';
           embeds.tile.fields[0].value = `a lot of stuff is gonna come in here welp`;
-          embeds.tile.timestamp = new Date();
+          // embeds.tile.timestamp = new Date();
           return message.channel.send({ embed: embeds.tile });
         }
       })
