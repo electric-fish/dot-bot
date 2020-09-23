@@ -79,12 +79,48 @@ const models = {
     });
   },
   
-  clearTile: (user, location) => {
-
+  clearTile: (user, location, comment, data) => {
+    console.log("clearTile()");
+    data.status = "inactive";
+    data.userid = user.id;
+    data.history.push({
+      "userid": user.id,
+      "action": "clear",
+      "timestamp": new Date(),
+      "comment": comment
+    });
+    return new Promise((resolve, reject) => {
+      const db = client.db(dbconfig.db_name);
+      db.collection('tiles').updateOne({"location":location}, {$set: data})
+      .then(() => {
+        resolve();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    });
   },
 
-  dropTile: (user, location) => {
-
+  dropTile: (user, location, comment, data) => {
+    console.log("clearTile()");
+    data.status = "inactive";
+    data.userid = user.id;
+    data.history.push({
+      "userid": user.id,
+      "action": "drop",
+      "timestamp": new Date(),
+      "comment": comment
+    });
+    return new Promise((resolve, reject) => {
+      const db = client.db(dbconfig.db_name);
+      db.collection('tiles').updateOne({"location":location}, {$set: data})
+      .then(() => {
+        resolve();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    });
   },
 
   /*

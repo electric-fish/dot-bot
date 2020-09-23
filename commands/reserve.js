@@ -1,5 +1,5 @@
 const models = require('../database/models');
-const controllers = require('./controllers');
+// const controllers = require('./controllers');
 
 module.exports = (message) => {
 
@@ -9,6 +9,7 @@ module.exports = (message) => {
   let contentArr = message.content.split(" ");
   // console.log(contentArr);
   if (contentArr.length < 2) {
+    message.react('❌');
     return message.reply(
       `please enter valid arguments.`
     );
@@ -45,6 +46,7 @@ module.exports = (message) => {
         })
         .catch((err) => {
           message.react('❌');
+          message.channel.send("Unknown error, please contact <@84383698778066944>.");
           console.log(err);
         });
     
@@ -70,6 +72,7 @@ module.exports = (message) => {
           })
           .catch((err) => {
             message.react('❌');
+            message.channel.send("Unknown error, please contact <@84383698778066944>.");
             console.log(err);
           });
     
@@ -81,9 +84,8 @@ module.exports = (message) => {
   })
   .catch((err) => {
     message.react('❌');
+    message.channel.send("Unknown error, please contact <@84383698778066944>.");
     console.log(err);
   });
-
-  // return message.reply("reserve has been run.");
 
 };
